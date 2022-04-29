@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                sh "mvn -f calculadora-api/pom.xml -Dmaven.test.failure.ignore=true clean package"
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                 sh "mvn -f calculadora-api/pom.xml -Dmaven.test.failure.ignore=false clean package"
+            }
+        }
+    }
+}
