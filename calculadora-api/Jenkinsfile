@@ -6,17 +6,17 @@ pipeline {
     }
 
     stages {
-        stage('Build') {
+        stage('Build & SonarQube analysis') {
             steps {
-                echo 'Building...'
-                sh "mvn -f calculadora-api/pom.xml -Dmaven.test.failure.ignore=true clean package"
+              withSonarQubeEnv(installationName: 'SonarQube') { 
+              sh 'mvn -f calculadora-api/pom.xml clean package sonar:sonar'
             }
+          }
         }
-        stage('Test') {
+        stage('Quality gate') {
             steps {
-                echo 'Testing...'
-                 sh "mvn -f calculadora-api/pom.xml -Dmaven.test.failure.ignore=false clean package"
+              waitForQualityGate abortPipeline: true
             }
-        }
+          }
     }
 }
